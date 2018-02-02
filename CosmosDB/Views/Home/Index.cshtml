@@ -1,0 +1,57 @@
+﻿@model IEnumerable<CosmosDB.Models.Person>
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<link href="//fonts.googleapis.com/css?family=Montserrat:400,500,600&amp;subset=latin-ext" rel="stylesheet" />
+	<link href="~/contents/cosmos.css" rel="stylesheet" />
+	<title>Cosmos DB</title>
+</head>
+<body>
+
+	<div class="wrapper">
+		<h1>Azure Cosmos DB</h1>
+
+		<div class="buttons">
+			<a class="button" href="@Url.Action("add", "")">Add new record</a>
+		</div>
+
+		@if (ViewBag.Results != null)
+		{
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+				<th>Phone</th>
+				<th></th>
+			</tr>
+			@foreach (var item in Model)
+			{
+			<tr>
+				<td>@item.name.first @item.name.last</td>
+				<td>@item.email.data</td>
+				<td>@item.phone.data</td>
+				<td>
+					<a href="@Url.Action("edit", "")/@item.id">Edit</a>
+					|
+					<a href="@Url.Action("delete", "")/@item.id">Delete</a>
+				</td>
+			</tr>
+			}
+		</table>
+		}
+		else
+		{
+			<p class="centered">
+				No records found!
+			</p>
+		}
+	</div>
+
+</body>
+</html>

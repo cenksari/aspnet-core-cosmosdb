@@ -1,41 +1,37 @@
-﻿@model CosmosDB.Models.Person
-@{
-	Layout = null;
-}
-<html>
+﻿<html>
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width" />
 	<link href="//fonts.googleapis.com/css?family=Montserrat:400,500,600&amp;subset=latin-ext" rel="stylesheet" />
-	<link href="~/contents/cosmos.css" rel="stylesheet" />
-	<title>Edit person</title>
+	<link href="~/css/cosmos.css" rel="stylesheet" />
+	<title>Add person</title>
 </head>
 <body>
 
 	<div class="wrapper">
-		<h1>Edit record</h1>
+		<h1>Add record</h1>
 
-		<form method="post" name="edit" id="edit">
-			<ul>
+		<form method="post" action="@Url.Content("/home/addperson")" name="add" id="add">
+			<ul class="clearfix">
 				<li class="half">
 					<label>Name</label>
-					<input type="text" name="first" id="first" placeholder="First name" data-required="true" data-error="First name is required" value="@Model.name.first" />
+					<input type="text" name="first" id="first" placeholder="First name" data-required="true" data-error="First name is required" />
 				</li>
 				<li class="half">
 					<label>Last name</label>
-					<input type="text" name="last" id="last" placeholder="Last name" data-required="true" data-error="Last name is required" value="@Model.name.last" />
+					<input type="text" name="last" id="last" placeholder="Last name" data-required="true" data-error="Last name is required" />
 				</li>
 				<li class="half">
 					<label>Email address</label>
-					<input type="text" name="email" id="email" placeholder="Email address" data-required="true" data-error="Email address is required" value="@Model.email.data" />
+					<input type="text" name="email" id="email" placeholder="Email address" data-required="true" data-error="Email address is required" />
 				</li>
 				<li class="half">
 					<label>Phone number</label>
-					<input type="text" name="phone" id="phone" placeholder="Phone number" data-required="true" data-error="Phone number is required" value="@Model.phone.data" />
+					<input type="text" name="phone" id="phone" placeholder="Phone number" data-required="true" data-error="Phone number is required" />
 				</li>
 				<li>
 					<label>Gender</label>
-					<select name="gender" id="gender" data-error="Gender is required">
+					<select name="gender" id="gender" data-required="true" data-error="Gender is required">
 						<option value="male">Male</option>
 						<option value="female">Female</option>
 						<option value="notspecified">Not specified</option>
@@ -43,15 +39,15 @@
 				</li>
 				<li class="half">
 					<label>Address</label>
-					<input type="text" name="address" id="address" placeholder="Details" data-required="true" data-error="Address is required" value="@Model.location.address" />
+					<input type="text" name="address" id="address" placeholder="Address" data-required="true" data-error="Address is required" />
 				</li>
 				<li class="half">
 					<label>Post code</label>
-					<input type="text" name="postcode" id="postcode" placeholder="Post code" data-required="true" data-error="Post code is required" value="@Model.location.postcode" />
+					<input type="text" name="postcode" id="postcode" placeholder="Post code" data-required="true" data-error="Post code is required" />
 				</li>
 				<li class="half">
 					<label>City</label>
-					<select name="city" id="city" data-error="City is required">
+					<select name="city" id="city" data-required="true" data-error="City is required">
 						<option value="Istanbul">Istanbul</option>
 						<option value="Ankara">Ankara</option>
 						<option value="Izmir">Izmir</option>
@@ -60,39 +56,42 @@
 				</li>
 				<li class="half">
 					<label>Country</label>
-					<select name="country" id="country" data-error="Country is required">
+					<select name="country" id="country" data-required="true" data-error="Country is required">
 						<option value="Turkey">Türkiye</option>
 						<option value="UK">United Kingdom</option>
 						<option value="USA">United States Of America</option>
 					</select>
 				</li>
+				<li class="half">
+					<label>Username</label>
+					<input type="text" name="username" id="username" placeholder="User name" data-required="true" data-error="User name is required" />
+				</li>
+				<li class="half">
+					<label>Password</label>
+					<input type="password" name="password" id="password" placeholder="Password" data-required="true" data-error="Password is required" />
+				</li>
 				<li>
 					<label>Localization</label>
-					<select name="localization" id="localization" data-error="Localization is required">
+					<select name="localization" id="localization" data-required="true" data-error="Localization is required">
 						<option value="tr-TR">TR</option>
 						<option value="en-GB">EN</option>
 					</select>
 				</li>
 				<li>
-					<button type="submit" name="submitform" id="submitform">EDIT</button>
+					<button type="submit" name="submitform" id="submitform">ADD</button>
 				</li>
 			</ul>
 		</form>
 
-		<p>
+		<p class="centered">
 			<a href="javascript:history.back();">Go back</a>
 		</p>
 	</div>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		$(function () {
-			$("#gender").val('@Model.gender');
-			$("#city").val('@Model.location.city');
-			$("#country").val('@Model.location.country');
-			$("#localization").val('@Model.localization');
-
-			$("#edit").submit(function (e) {
+			$("#add").submit(function (e) {
 				e.preventDefault();
 
 				var count = 0;
@@ -105,11 +104,8 @@
 
 					if ($.trim($(this).val()) === "") {
 						count++;
-
 						$(this).addClass("error");
-
 						$(this).parent().find("span").remove();
-
 						$(this).parent().append('<span class="error-message">' + errorMessage + '</span>');
 					}
 					else {

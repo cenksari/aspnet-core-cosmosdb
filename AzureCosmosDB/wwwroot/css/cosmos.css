@@ -1,8 +1,4 @@
-﻿* {
-	outline: none;
-}
-
-body {
+﻿body {
 	margin: 20px;
 	font-size: 1em;
 	font-family: 'Montserrat', sans-serif;
@@ -80,10 +76,10 @@ form li {
 	box-sizing: border-box;
 }
 
-form li.half {
-	float: left;
-	width: 50%;
-}
+	form li.half {
+		float: left;
+		width: 50%;
+	}
 
 form label {
 	display: block;
@@ -93,7 +89,6 @@ form label {
 
 .error {
 	border: 1px solid #ff0000;
-	box-shadow: 1px 1px 20px rgba(255,0,0,0.3);
 }
 
 	.error::-webkit-input-placeholder {
@@ -109,6 +104,10 @@ form label {
 
 .centered {
 	text-align: center;
+}
+
+.right-aligned {
+	text-align: right;
 }
 
 .buttons {

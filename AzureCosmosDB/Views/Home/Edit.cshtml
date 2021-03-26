@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width" />
 	<link href="//fonts.googleapis.com/css?family=Montserrat:400,500,600&amp;subset=latin-ext" rel="stylesheet" />
 	<link href="~/css/cosmos.css" rel="stylesheet" />
-	<title>Edit person</title>
+	<title>Edit record</title>
 </head>
 <body>
 
@@ -83,37 +83,36 @@
 		</p>
 	</div>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script>
 		$(function () {
-			$("#gender").val('@item.Gender');
-			$("#city").val('@item.Location.City');
-			$("#country").val('@item.Location.Country');
-			$("#localization").val('@item.Localization');
+			$('#gender').val('@item.Gender');
+			$('#city').val('@item.Location.City');
+			$('#country').val('@item.Location.Country');
+			$('#localization').val('@item.Localization');
 
-			$("#edit").submit(function (e) {
+			$('#edit').submit(function (e) {
 				e.preventDefault();
 
-				var count = 0;
-				var errorMessage = '';
+				let count = 0;
+				let errorMessage = '';
 
 				$('input[data-required="true"]').each(function () {
-					errorMessage = $(this).attr("data-error");
+					errorMessage = $(this).attr('data-error');
 
-					$(this).parent().find("span").remove();
+					$(this).parent().find('span').remove();
 
-					if ($.trim($(this).val()) === "") {
+					if ($.trim($(this).val()) === '') {
 						count++;
-						$(this).addClass("error");
-						$(this).parent().find("span").remove();
+						$(this).addClass('error');
+						$(this).parent().find('span').remove();
 						$(this).parent().append('<span class="error-message">' + errorMessage + '</span>');
-					}
-					else {
-						$(this).removeClass("error");
+					} else {
+						$(this).removeClass('error');
 					}
 				});
 
-				if (count == 0) {
+				if (count === 0) {
 					document.forms[0].submit();
 				}
 			});

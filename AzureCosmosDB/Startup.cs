@@ -17,6 +17,7 @@ namespace AzureCosmosDB
 		{
 			services.AddControllersWithViews();
 
+			// Adding Cosmos DB Service
 			services.AddSingleton<ICosmosDBService, CosmosDBService>();
 		}
 
@@ -36,8 +37,6 @@ namespace AzureCosmosDB
 			app.UseStaticFiles();
 
 			app.UseRouting();
-
-			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

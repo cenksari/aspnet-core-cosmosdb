@@ -1,5 +1,6 @@
 namespace AzureCosmosDB
 {
+	using AzureCosmosDB.Services;
 	using Microsoft.AspNetCore.Builder;
 	using Microsoft.AspNetCore.Hosting;
 	using Microsoft.Extensions.Configuration;
@@ -12,7 +13,12 @@ namespace AzureCosmosDB
 
 		public IConfiguration Configuration { get; }
 
-		public void ConfigureServices(IServiceCollection services) => services.AddControllersWithViews();
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddControllersWithViews();
+
+			services.AddSingleton<ICosmosDBService, CosmosDBService>();
+		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
@@ -24,7 +30,9 @@ namespace AzureCosmosDB
 			{
 				app.UseHsts();
 			}
+
 			app.UseHttpsRedirection();
+
 			app.UseStaticFiles();
 
 			app.UseRouting();

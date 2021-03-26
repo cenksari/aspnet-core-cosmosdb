@@ -1,15 +1,12 @@
 ﻿namespace AzureCosmosDB.Controllers
 {
+	using AzureCosmosDB.Services;
 	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.Extensions.Configuration;
 
 	public abstract class BaseController : Controller
 	{
-		public readonly CosmosDBRepository CosmosDBRepository;
+		public readonly ICosmosDBService CosmosDBService;
 
-		protected BaseController(IConfiguration configuration)
-		{
-			CosmosDBRepository = new(configuration);
-		}
+		protected BaseController(ICosmosDBService cosmosDBService) => CosmosDBService = cosmosDBService;
 	}
 }

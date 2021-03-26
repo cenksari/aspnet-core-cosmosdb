@@ -15,13 +15,13 @@
 		/// <param name="value">String to convert</param>
 		public static string ToMD5(this string value)
 		{
-			var byteData = Encoding.ASCII.GetBytes(value);
+			byte[] byteData = Encoding.ASCII.GetBytes(value);
 
-			var oMd5 = MD5.Create();
+			MD5 oMd5 = MD5.Create();
 
-			var hashData = oMd5.ComputeHash(byteData);
+			byte[] hashData = oMd5.ComputeHash(byteData);
 
-			var sb = new StringBuilder();
+			StringBuilder sb = new();
 
 			for (int x = 0; x < hashData.Length; x++)
 			{

@@ -2,7 +2,7 @@
 {
 	using System;
 
-	public class Person
+	public record Person
 	{
 		public string Id { get; set; }
 		public bool Active { get; set; }
@@ -19,13 +19,13 @@
 		public DateTime LastUpdated { get; set; }
 	}
 
-	public class Name
+	public record Name
 	{
 		public string First { get; set; }
 		public string Last { get; set; }
 	}
 
-	public class AddressData
+	public record AddressData
 	{
 		public string City { get; set; }
 		public string Country { get; set; }
@@ -33,21 +33,21 @@
 		public string PostCode { get; set; }
 	}
 
-	public class VerifiedData
+	public record VerifiedData
 	{
 		public string Data { get; set; }
 		public bool Verified { get; set; }
 		public DateTime DateVerified { get; set; }
 	}
 
-	public class Login
+	public record Login
 	{
 		public string Username { get; set; }
 		public string Password { get; set; }
 		public string Userkey { get; set; }
 	}
 
-	public class ProfilePicture
+	public record ProfilePicture
 	{
 		public string Large { get; set; }
 		public string Medium { get; set; }

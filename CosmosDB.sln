@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31019.35
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureCosmosDB", "AzureCosmosDB\AzureCosmosDB.csproj", "{B0B32717-B663-4F12-AC1B-60F862468BAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-core-cosmosdb", "aspnet-core-cosmosdb\aspnet-core-cosmosdb.csproj", "{C1B68A89-C3DD-4E8E-8271-4C4A11B910C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B0B32717-B663-4F12-AC1B-60F862468BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B0B32717-B663-4F12-AC1B-60F862468BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B0B32717-B663-4F12-AC1B-60F862468BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0B32717-B663-4F12-AC1B-60F862468BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1B68A89-C3DD-4E8E-8271-4C4A11B910C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1B68A89-C3DD-4E8E-8271-4C4A11B910C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1B68A89-C3DD-4E8E-8271-4C4A11B910C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1B68A89-C3DD-4E8E-8271-4C4A11B910C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

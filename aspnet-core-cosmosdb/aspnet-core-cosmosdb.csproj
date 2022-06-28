@@ -9,10 +9,11 @@
 
   <ItemGroup>
     <Content Remove="C:\Users\cenk\.nuget\packages\microsoft.azure.cosmos\3.27.1\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
+    <Content Remove="C:\Users\cenk\.nuget\packages\microsoft.azure.cosmos\3.28.0\contentFiles\any\netstandard2.0\ThirdPartyNotice.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.27.1" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.28.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
   </ItemGroup>
 

@@ -1,118 +1,125 @@
-﻿namespace Tools
+﻿namespace aspnet_core_cosmosdb;
+
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+
+/// <summary>
+/// Cosmos DB service.
+/// </summary>
+public class CosmosService : ICosmosService
 {
-	using Microsoft.Azure.Cosmos;
-	using Microsoft.Extensions.Configuration;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
-	using System.Threading.Tasks;
+	private readonly CosmosClient _cosmosClient;
+
+	private const string DatabaseId = "ENTER_YOUR_COSMOS_DB_NAME_HERE";
+
+	private readonly CosmosClientOptions options = new()
+	{
+		PortReuseMode = PortReuseMode.PrivatePortPool,
+		SerializerOptions = new()
+		{
+			PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+		}
+	};
+
+	public CosmosService(IConfiguration configuration) => _cosmosClient = new(configuration["CosmosDbEndpoint"], configuration["CosmosDbKey"], options);
 
 	/// <summary>
-	/// Cosmos DB service.
+	/// Reads selected documents contents.
 	/// </summary>
-	public class CosmosService : ICosmosService
+	/// <param name="containerName">Container name</param>
+	/// <param name="documentId">Document ID</param>
+	public async Task<T?> GetDocumentAsync<T>(string containerName, string documentId)
 	{
-		private readonly CosmosClient CosmosClient;
+		Container? container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
-		private const string DatabaseId = "apis"; // ENTER YOUR COSMOS DB NAME
-
-		private readonly CosmosClientOptions options = new()
+		try
 		{
-			PortReuseMode = PortReuseMode.PrivatePortPool,
-			SerializerOptions = new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase }
-		};
+			ItemResponse<T> response = await container.ReadItemAsync<T>(documentId, new(documentId));
 
-		public CosmosService(IConfiguration configuration) => CosmosClient = new(configuration["CosmosDbEndpoint"], configuration["CosmosDbKey"], options);
-
-		/// <summary>
-		/// Read selected documents contents.
-		/// </summary>
-		/// <param name="containerName">Container name</param>
-		/// <param name="documentId">Document id</param>
-		public async Task<T?> GetDocumentAsync<T>(string containerName, string documentId)
+			return response.Resource;
+		}
+		catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
 		{
-			Container container = CosmosClient.GetContainer(DatabaseId, containerName);
+			return default;
+		}
+	}
 
-			try
-			{
-				ItemResponse<T> response = await container.ReadItemAsync<T>(documentId, new PartitionKey(documentId));
+	/// <summary>
+	/// Creates a document.
+	/// </summary>
+	/// <param name="containerName">Container name</param>
+	/// <param name="item">Document</param>
+	public async Task<T> CreateDocumentAsync<T>(string containerName, T item)
+	{
+		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
-				return response.Resource;
-			}
-			catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
-			{
-				return default(T);
-			}
+		ItemResponse<T> response = await container.CreateItemAsync(item);
+
+		return response.Resource;
+	}
+
+	/// <summary>
+	/// Returns all documents in selected collection.
+	/// </summary>
+	/// <param name="containerName">Container name</param>
+	/// <param name="queryString">Document query</param>
+	public async Task<IEnumerable<T>?> ListDocumentsAsync<T>(string containerName, string queryString)
+	{
+		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+
+		FeedIterator<T> query = container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
+
+		List<T> results = [];
+
+		while (query.HasMoreResults)
+		{
+			FeedResponse<T> response = await query.ReadNextAsync();
+
+			foreach (T item in response) { results.Add(item); }
 		}
 
-		/// <summary>
-		/// Create a document.
-		/// </summary>
-		/// <param name="containerName">Container name</param>
-		/// <param name="item">Document</param>
-		public async Task<T> CreateDocumentAsync<T>(string containerName, T item)
-		{
-			Container container = CosmosClient.GetContainer(DatabaseId, containerName);
+		return results;
+	}
 
-			return await container.CreateItemAsync(item);
+	/// <summary>
+	/// Replaces a document.
+	/// </summary>
+	/// <param name="containerName">Container name</param>
+	/// <param name="documentId">Document ID</param>
+	/// <param name="item">Document</param>
+	public async Task<T?> ReplaceDocumentAsync<T>(string containerName, string documentId, T item)
+	{
+		if (!string.IsNullOrEmpty(documentId))
+		{
+			Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+
+			ItemResponse<T> response = await container.UpsertItemAsync(item, new(documentId));
+
+			return response.Resource;
 		}
 
-		/// <summary>
-		/// Return all documents in selected collection.
-		/// </summary>
-		/// <param name="containerName">Container name</param>
-		/// <param name="queryString">Document query</param>
-		public async Task<IEnumerable<T>> ListDocumentsAsync<T>(string containerName, string queryString)
+		return default;
+	}
+
+	/// <summary>
+	/// Deletes selected document.
+	/// </summary>
+	/// <param name="containerName">Container name</param>
+	/// <param name="documentId">Document ID</param>
+	public async Task<T?> DeleteDocumentAsync<T>(string containerName, string documentId)
+	{
+		if (!string.IsNullOrEmpty(documentId))
 		{
-			Container container = CosmosClient.GetContainer(DatabaseId, containerName);
+			Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
-			FeedIterator<T> query = container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
+			ItemResponse<T> response = await container.DeleteItemAsync<T>(documentId, new(documentId));
 
-			List<T> results = new();
-
-			while (query.HasMoreResults)
-			{
-				FeedResponse<T> response = await query.ReadNextAsync();
-
-				results.AddRange(response.ToList());
-			}
-
-			return results;
+			return response.Resource;
 		}
 
-		/// <summary>
-		/// Replace a document.
-		/// </summary>
-		/// <param name="containerName">Container name</param>
-		/// <param name="documentId">Document id</param>
-		/// <param name="item">Document</param>
-		public async Task<T?> ReplaceDocumentAsync<T>(string containerName, string documentId, T item)
-		{
-			if (!string.IsNullOrWhiteSpace(documentId))
-			{
-				Container container = CosmosClient.GetContainer(DatabaseId, containerName);
-
-				return await container.UpsertItemAsync(item, new PartitionKey(documentId));
-			}
-
-			return default(T);
-		}
-
-		/// <summary>
-		/// Delete a selected document.
-		/// </summary>
-		/// <param name="containerName">Container name</param>
-		/// <param name="documentId">Document id</param>
-		public async Task<T?> DeleteDocumentAsync<T>(string containerName, string documentId)
-		{
-			if (!string.IsNullOrWhiteSpace(documentId))
-			{
-				Container container = CosmosClient.GetContainer(DatabaseId, containerName);
-
-				return await container.DeleteItemAsync<T>(documentId, new PartitionKey(documentId));
-			}
-
-			return default(T);
-		}
+		return default;
 	}
 }

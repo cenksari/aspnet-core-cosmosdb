@@ -1,11 +1,8 @@
-
 # ASP.NET Core Cosmos DB Service
 
 **A streamlined and efficient service for interacting with Azure Cosmos DB in ASP.NET Core applications.**
 
----
-
-## 📋 Features
+## Key Features
 
 - **Retrieve Documents**: Fetch specific documents from a Cosmos DB container.
 - **Create Documents**: Insert new items into a container.
@@ -14,9 +11,13 @@
 - **Delete Documents**: Remove items by their document ID.
 - **Configurable**: Easily integrates with your app's configuration system.
 
----
+## Support this project
 
-## 🚀 Getting Started
+You are free to download, change and use it anywhere. I will regularly update this template with new resources and pages I found on the web. Don't hesitate to participate by sending a PR! Maybe your first on Github :)
+
+If you like this resource, please follow me on GitHub. Thank you!
+
+## Getting Started
 
 ### 1. Prerequisites
 - **.NET 9.0+**
@@ -43,9 +44,7 @@ Add the following settings to your `appsettings.json` file:
 }
 ```
 
----
-
-## 🛠️ Usage
+## Usage
 
 ### Inject and Use the Service
 Register `CosmosService` in your dependency injection container:
@@ -75,9 +74,7 @@ public class MyController : ControllerBase
 }
 ```
 
----
-
-## ✨ Key Methods
+## Key Methods
 
 ### 1. Get a Document
 ```csharp
@@ -104,20 +101,14 @@ await cosmosService.ReplaceDocumentAsync("containerName", "documentId", updatedI
 await cosmosService.DeleteDocumentAsync<MyType>("containerName", "documentId");
 ```
 
----
+## Contributing
 
-## 💡 Contributions
+If you would like to contribute, please create a new branch and submit a pull request with your changes. Review may be needed before acceptance.
 
-Contributions are welcome! Feel free to open an issue or submit a pull request to improve this project.
+## Authors
 
----
+@cenksari
 
-## 📜 License
+## License
 
-This project is licensed under the **MIT License**.
-
----
-
-## 🌟 Acknowledgments
-
-Thanks to the **Azure SDK team** for their amazing libraries and tools!
+MIT

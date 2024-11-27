@@ -33,6 +33,9 @@ public class CosmosService : ICosmosService
 	/// <param name="documentId">Document ID</param>
 	public async Task<T?> GetDocumentAsync<T>(string containerName, string documentId)
 	{
+		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(documentId))
+			throw new ArgumentException("Container name or Document Id cannot be null or empty.");
+
 		Container? container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
 		try
@@ -54,6 +57,9 @@ public class CosmosService : ICosmosService
 	/// <param name="item">Document</param>
 	public async Task<T> CreateDocumentAsync<T>(string containerName, T item)
 	{
+		if (string.IsNullOrEmpty(containerName))
+			throw new ArgumentException("Container name cannot be null or empty.");
+
 		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
 		ItemResponse<T> response = await container.CreateItemAsync(item);
@@ -68,6 +74,9 @@ public class CosmosService : ICosmosService
 	/// <param name="queryString">Document query</param>
 	public async Task<IEnumerable<T>?> ListDocumentsAsync<T>(string containerName, string queryString)
 	{
+		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(queryString))
+			throw new ArgumentException("Container name or query string cannot be null or empty.");
+
 		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
 		FeedIterator<T> query = container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
@@ -78,7 +87,7 @@ public class CosmosService : ICosmosService
 		{
 			FeedResponse<T> response = await query.ReadNextAsync();
 
-			foreach (T item in response) { results.Add(item); }
+			results.AddRange(response);
 		}
 
 		return results;
@@ -92,16 +101,21 @@ public class CosmosService : ICosmosService
 	/// <param name="item">Document</param>
 	public async Task<T?> ReplaceDocumentAsync<T>(string containerName, string documentId, T item)
 	{
-		if (!string.IsNullOrEmpty(documentId))
-		{
-			Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(documentId))
+			throw new ArgumentException("Container name or Document Id cannot be null or empty.");
 
+		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+
+		try
+		{
 			ItemResponse<T> response = await container.UpsertItemAsync(item, new(documentId));
 
 			return response.Resource;
 		}
-
-		return default;
+		catch (Exception)
+		{
+			throw;
+		}
 	}
 
 	/// <summary>
@@ -111,7 +125,10 @@ public class CosmosService : ICosmosService
 	/// <param name="documentId">Document ID</param>
 	public async Task<T?> DeleteDocumentAsync<T>(string containerName, string documentId)
 	{
-		if (!string.IsNullOrEmpty(documentId))
+		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(documentId))
+			throw new ArgumentException("Container name or Document Id cannot be null or empty.");
+
+		try
 		{
 			Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
 
@@ -119,7 +136,9 @@ public class CosmosService : ICosmosService
 
 			return response.Resource;
 		}
-
-		return default;
+		catch (Exception)
+		{
+			throw;
+		}
 	}
 }

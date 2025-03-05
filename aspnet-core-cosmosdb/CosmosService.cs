@@ -9,22 +9,21 @@ using System.Threading.Tasks;
 /// <summary>
 /// Cosmos DB service.
 /// </summary>
-public class CosmosService : ICosmosService
+public class CosmosService(IConfiguration configuration) : ICosmosService
 {
-	private readonly CosmosClient _cosmosClient;
+	private const string DatabaseName = "ENTER_YOUR_COSMOS_DB_NAME_HERE";
 
-	private const string DatabaseId = "ENTER_YOUR_COSMOS_DB_NAME_HERE";
-
-	private readonly CosmosClientOptions options = new()
-	{
-		PortReuseMode = PortReuseMode.PrivatePortPool,
-		SerializerOptions = new()
+	private readonly CosmosClient _cosmosClient = new(
+		configuration["CosmosDbEndpoint"],
+		configuration["CosmosDbKey"],
+		new()
 		{
-			PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-		}
-	};
-
-	public CosmosService(IConfiguration configuration) => _cosmosClient = new(configuration["CosmosDbEndpoint"], configuration["CosmosDbKey"], options);
+			PortReuseMode = PortReuseMode.PrivatePortPool,
+			SerializerOptions = new()
+			{
+				PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+			}
+		});
 
 	/// <summary>
 	/// Reads selected documents contents.
@@ -36,10 +35,10 @@ public class CosmosService : ICosmosService
 		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(documentId))
 			throw new ArgumentException("Container name or Document Id cannot be null or empty.");
 
-		Container? container = _cosmosClient.GetContainer(DatabaseId, containerName);
-
 		try
 		{
+			Container? container = _cosmosClient.GetContainer(DatabaseName, containerName);
+
 			ItemResponse<T> response = await container.ReadItemAsync<T>(documentId, new(documentId));
 
 			return response.Resource;
@@ -60,11 +59,18 @@ public class CosmosService : ICosmosService
 		if (string.IsNullOrEmpty(containerName))
 			throw new ArgumentException("Container name cannot be null or empty.");
 
-		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+		try
+		{
+			Container? container = _cosmosClient.GetContainer(DatabaseName, containerName);
 
-		ItemResponse<T> response = await container.CreateItemAsync(item);
+			ItemResponse<T> response = await container.CreateItemAsync(item);
 
-		return response.Resource;
+			return response.Resource;
+		}
+		catch
+		{
+			throw;
+		}
 	}
 
 	/// <summary>
@@ -77,7 +83,7 @@ public class CosmosService : ICosmosService
 		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(queryString))
 			throw new ArgumentException("Container name or query string cannot be null or empty.");
 
-		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+		Container? container = _cosmosClient.GetContainer(DatabaseName, containerName);
 
 		FeedIterator<T> query = container.GetItemQueryIterator<T>(new QueryDefinition(queryString));
 
@@ -104,15 +110,15 @@ public class CosmosService : ICosmosService
 		if (string.IsNullOrEmpty(containerName) || string.IsNullOrEmpty(documentId))
 			throw new ArgumentException("Container name or Document Id cannot be null or empty.");
 
-		Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
-
 		try
 		{
+			Container? container = _cosmosClient.GetContainer(DatabaseName, containerName);
+
 			ItemResponse<T> response = await container.UpsertItemAsync(item, new(documentId));
 
 			return response.Resource;
 		}
-		catch (Exception)
+		catch
 		{
 			throw;
 		}
@@ -130,13 +136,13 @@ public class CosmosService : ICosmosService
 
 		try
 		{
-			Container container = _cosmosClient.GetContainer(DatabaseId, containerName);
+			Container? container = _cosmosClient.GetContainer(DatabaseName, containerName);
 
 			ItemResponse<T> response = await container.DeleteItemAsync<T>(documentId, new(documentId));
 
 			return response.Resource;
 		}
-		catch (Exception)
+		catch
 		{
 			throw;
 		}

@@ -9,7 +9,7 @@ public interface ICosmosService
 
 	Task<T?> GetDocumentAsync<T>(string containerName, string documentId);
 
-	Task<T?> DeleteDocumentAsync<T>(string containerName, string documentId);
+	Task<bool> DeleteDocumentAsync<T>(string containerName, string documentId);
 
 	Task<T?> ReplaceDocumentAsync<T>(string containerName, string documentId, T item);
 
